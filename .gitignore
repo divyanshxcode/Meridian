@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# Data (generated at runtime)
+*.db
+data/raw/
+
+# Tooling
+.DS_Store
+*.log
