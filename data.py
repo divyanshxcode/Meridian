@@ -127,6 +127,7 @@ def _synthetic(tickers: list[str], period: str) -> pd.DataFrame:
 
 
 def _set_meta(key: str, value: str) -> None:
+    init_schema()
     con = _connect()
     con.execute("INSERT OR REPLACE INTO meta(k, v) VALUES (?,?)", (key, value))
     con.commit()
@@ -134,6 +135,7 @@ def _set_meta(key: str, value: str) -> None:
 
 
 def meta(key: str) -> str | None:
+    init_schema()
     con = _connect()
     row = con.execute("SELECT v FROM meta WHERE k=?", (key,)).fetchone()
     con.close()
@@ -142,6 +144,7 @@ def meta(key: str) -> str | None:
 
 # ---- SQL query API used by analytics/dashboard ---------------------------------
 def sql_prices(ticker: str) -> pd.DataFrame:
+    init_schema()
     con = _connect()
     df = pd.read_sql_query(
         "SELECT date, close FROM prices WHERE ticker=? ORDER BY date",
@@ -154,6 +157,7 @@ def sql_prices(ticker: str) -> pd.DataFrame:
 
 def sql_wide_prices() -> pd.DataFrame:
     """Wide price matrix (date x ticker) via a raw SQL pivot."""
+    init_schema()
     con = _connect()
     long = pd.read_sql_query("SELECT ticker, date, close FROM prices ORDER BY date", con)
     con.close()
@@ -163,6 +167,7 @@ def sql_wide_prices() -> pd.DataFrame:
 
 
 def sql_assets() -> pd.DataFrame:
+    init_schema()
     con = _connect()
     df = pd.read_sql_query("SELECT * FROM assets", con)
     con.close()
